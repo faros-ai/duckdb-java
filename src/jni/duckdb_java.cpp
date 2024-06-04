@@ -2,8 +2,8 @@
 #include "duckdb.hpp"
 #include "duckdb/catalog/catalog_search_path.hpp"
 #include "duckdb/common/arrow/result_arrow_wrapper.hpp"
+#include "duckdb/common/mutex.hpp"
 #include "duckdb/common/operator/cast_operators.hpp"
-#include "duckdb/common/shared_ptr.hpp"
 #include "duckdb/function/table/arrow.hpp"
 #include "duckdb/main/appender.hpp"
 #include "duckdb/main/client_context.hpp"
@@ -12,6 +12,8 @@
 #include "duckdb/main/db_instance_cache.hpp"
 #include "duckdb/main/extension_util.hpp"
 #include "duckdb/parser/parsed_data/create_type_info.hpp"
+#include "duckdb/storage/buffer_manager.hpp"
+#include "duckdb/storage/buffer/buffer_pool.hpp"
 
 
 using namespace duckdb;
@@ -388,6 +390,23 @@ static Connection *get_connection(JNIEnv *env, jobject conn_ref_buf) {
 	return conn_ref;
 }
 
+static duckdb::shared_ptr<BufferPool> get_buffer_pool(idx_t max_memory, bool track_eviction_timestamps) {
+	static duckdb::shared_ptr<BufferPool> pool = nullptr;
+	static mutex mtx;
+	if (!pool) {
+		lock_guard<mutex> lock(mtx);
+		if (!pool) {
+			pool = make_shared_ptr<BufferPool>(max_memory, track_eviction_timestamps);
+		}
+	} else if (pool->GetMaxMemory() != max_memory) {
+		lock_guard<mutex> lock(mtx);
+		if (pool->GetMaxMemory() != max_memory) {
+			pool->SetLimit(max_memory, "");
+		}
+	}
+	return pool;
+}
+
 //! The database instance cache, used so that multiple connections to the same file point to the same database object
 duckdb::DBInstanceCache instance_cache;
 
@@ -400,6 +419,9 @@ jobject _duckdb_jdbc_startup(JNIEnv *env, jclass, jbyteArray database_j, jboolea
 	    JDBC_STREAM_RESULTS,
 	    "Whether to stream results. Only one ResultSet on a connection can be open at once when true",
 	    LogicalType::BOOLEAN);
+	config.buffer_pool = get_buffer_pool(
+		config.options.maximum_memory,
+		config.options.buffer_manager_track_eviction_timestamps);
 	if (read_only) {
 		config.options.access_mode = AccessMode::READ_ONLY;
 	}
