@@ -6,3 +6,4 @@
 # "baked in" to the python binaries.
 duckdb_extension_load(parquet)
 duckdb_extension_load(icu)
+duckdb_extension_load(jemalloc)
