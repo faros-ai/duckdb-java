@@ -18,7 +18,7 @@ jobs:
     env:
       GEN: ninja
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
         with:
           fetch-depth: 0
           ref: ${{ inputs.git_ref }}
@@ -48,7 +48,7 @@ jobs:
         run: |
           cp build/release/duckdb_jdbc.jar duckdb_jdbc-linux-amd64.jar
           ./scripts/upload-assets-to-staging.sh github_release duckdb_jdbc-linux-amd64.jar
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: java-linux-amd64
           path: |
@@ -64,7 +64,7 @@ jobs:
       GEN: ninja
       DUCKDB_PLATFORM: linux_arm64
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
         with:
           fetch-depth: 0
           ref: ${{ inputs.git_ref }}
@@ -92,7 +92,7 @@ jobs:
           cp build/release/duckdb_jdbc.jar duckdb_jdbc-linux-aarch64.jar
          # ./scripts/upload-assets-to-staging.sh github_release duckdb_jdbc-linux-aarch64.jar
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: java-linux-aarch64
           path: |
@@ -104,15 +104,15 @@ jobs:
     runs-on: windows-latest
     needs: java-linux-amd64
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
         with:
           fetch-depth: 0
           ref: ${{ inputs.git_ref }}
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
           python-version: "3.12"
       - name: Setup Ccache
-        uses: hendrikmuhs/ccache-action@main
+        uses: hendrikmuhs/ccache-action@13c5b28e4a76834446e40f66722377da0514d5a0 # main
         with:
           key: ${{ github.job }}
           save: ${{ github.ref == 'refs/heads/main' || github.repository != 'duckdb/duckdb-java' }}
@@ -134,7 +134,7 @@ jobs:
         run: |
           cp build/release/duckdb_jdbc.jar duckdb_jdbc-windows-amd64.jar
           ./scripts/upload-assets-to-staging.sh github_release duckdb_jdbc-windows-amd64.jar
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: java-windows-amd64
           path: |
@@ -146,15 +146,15 @@ jobs:
     runs-on: macos-14
     needs: java-linux-amd64
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
         with:
           fetch-depth: 0
           ref: ${{ inputs.git_ref }}
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
           python-version: "3.12"
       - name: Setup Ccache
-        uses: hendrikmuhs/ccache-action@main
+        uses: hendrikmuhs/ccache-action@13c5b28e4a76834446e40f66722377da0514d5a0 # main
         with:
           key: ${{ github.job }}
           save: ${{ github.ref == 'refs/heads/main' }}
@@ -176,7 +176,7 @@ jobs:
         run: |
           cp build/release/duckdb_jdbc.jar duckdb_jdbc-osx-universal.jar
           ./scripts/upload-assets-to-staging.sh github_release duckdb_jdbc-osx-universal.jar
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: java-osx-universal
           path: |
@@ -194,7 +194,7 @@ jobs:
       - java-osx-universal
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
         with:
           fetch-depth: 0
           ref: ${{ inputs.git_ref }}
@@ -202,22 +202,22 @@ jobs:
       - shell: bash
         run: mkdir jdbc-artifacts
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: java-linux-aarch64
           path: jdbc-artifacts/java-linux-aarch64
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: java-linux-amd64
           path: jdbc-artifacts/java-linux-amd64
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: java-windows-amd64
           path: jdbc-artifacts/java-windows-amd64
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: java-osx-universal
           path: jdbc-artifacts/java-osx-universal
@@ -249,7 +249,7 @@ jobs:
           fi
           ls -lahR jdbc-artifacts
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: java-jars
           path: |
@@ -266,7 +266,7 @@ jobs:
       GEN: ninja
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
         with:
           fetch-depth: 0
           ref: ${{ inputs.git_ref }}
@@ -285,7 +285,7 @@ jobs:
           git clone https://github.com/cwida/jdbccts.git
 
       - name: Setup Ccache
-        uses: hendrikmuhs/ccache-action@v1.2.11 # Note: pinned due to GLIBC incompatibility in later releases
+        uses: hendrikmuhs/ccache-action@13c5b28e4a76834446e40f66722377da0514d5a0 # main
         with:
           key: ${{ github.job }}
           save: ${{ github.ref == 'refs/heads/main' || github.repository != 'duckdb/duckdb-java' }}
