@@ -112,7 +112,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Setup Ccache
-        uses: hendrikmuhs/ccache-action@13c5b28e4a76834446e40f66722377da0514d5a0 # main
+        uses: hendrikmuhs/ccache-action@e91f31892a1d1b8c44424b1a94c0b7f52d337168 # main
         with:
           key: ${{ github.job }}
           save: ${{ github.ref == 'refs/heads/main' || github.repository != 'duckdb/duckdb-java' }}
@@ -154,7 +154,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Setup Ccache
-        uses: hendrikmuhs/ccache-action@13c5b28e4a76834446e40f66722377da0514d5a0 # main
+        uses: hendrikmuhs/ccache-action@e91f31892a1d1b8c44424b1a94c0b7f52d337168 # main
         with:
           key: ${{ github.job }}
           save: ${{ github.ref == 'refs/heads/main' }}
@@ -285,7 +285,7 @@ jobs:
           git clone https://github.com/cwida/jdbccts.git
 
       - name: Setup Ccache
-        uses: hendrikmuhs/ccache-action@13c5b28e4a76834446e40f66722377da0514d5a0 # main
+        uses: hendrikmuhs/ccache-action@e91f31892a1d1b8c44424b1a94c0b7f52d337168 # main
         with:
           key: ${{ github.job }}
           save: ${{ github.ref == 'refs/heads/main' || github.repository != 'duckdb/duckdb-java' }}
